@@ -22,6 +22,7 @@ Rails.application.routes.draw do
   resources :questions
 
   resources :students
+  post "import_student" => 'students#import'
 
   controller :sessions do
     get "login"=>'sessions#new'

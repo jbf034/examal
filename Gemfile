@@ -1,4 +1,4 @@
-source 'https://ruby.taobao.org'
+source 'https://gems.ruby-china.com'
 
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
@@ -39,11 +39,13 @@ gem 'spring',        group: :development
 # gem 'debugger', group: [:development, :test]
 
 gem 'mysql2'
+gem 'smarter_csv'
 
 # 字体图标
 gem "font-awesome-rails"
 
 group :development do
+  gem "byebug"
   gem "better_errors"
   gem "binding_of_caller"
 end

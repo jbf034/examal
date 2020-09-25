@@ -1,3 +1,4 @@
+require 'csv' 
 class StudentsController < BackyardController
   before_action :set_student, only: [:show, :edit, :update, :destroy]
 
@@ -66,6 +67,18 @@ class StudentsController < BackyardController
     end
   end
 
+  def import
+    url = params["data_file"].tempfile.path
+    csv_text = File.read(url).force_encoding("gbk").encode("utf-8", replace: nil)
+    CSV.parse(csv_text, :headers => true) do |row|
+      byebug
+     puts row    
+    end 
+    respond_to do |format|
+      format.html { redirect_to students_url, notice: '导入成功' }
+      format.json { head :no_content }
+    end
+  end
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_student

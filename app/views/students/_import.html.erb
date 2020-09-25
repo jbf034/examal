@@ -1,0 +1,5 @@
+<form method="post" action="<%=import_student_path %>" enctype="multipart/form-data">
+  <input class="form-control" type="file" name="data_file" accept=".csv">
+  <input type="hidden"  name="<%=request_forgery_protection_token.to_s%>"  value="<%=form_authenticity_token%>" >
+  <button type="submit" class="btn btn-primary" style="width: 120px">提交</button>
+</form>
