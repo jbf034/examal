@@ -1,0 +1,14 @@
+<%= form_tag("/students", method: "get") do %>
+  <%= label_tag "name", "姓名:" ,class:'search' %>
+  <%= text_field_tag "search[name]", @search.name, class:'search' %>
+
+  <%= label_tag "name", "项目:", class:'search' %>
+
+  <%= text_field_tag "search[profession]" ,@search.profession ,class:'search' %>
+
+  <%= label_tag "name", "年级:", class:'search' %>
+  <%= text_field_tag "search[grade]" ,@search.grade ,class:'search' %>
+
+
+  <%= submit_tag "查找", class:"btn" %>
+<% end %>

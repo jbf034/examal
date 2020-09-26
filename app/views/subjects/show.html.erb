@@ -1,0 +1,16 @@
+<table class="table">
+  <tr>
+    <td><strong>标题:</strong></td>
+    <td><%= @subject.title %></td>
+  </tr>
+  <tr>
+    <td><strong>备注:</strong></td>
+    <td><%= @subject.remark %></td>
+  </tr>
+  <tr>
+    <td><strong>教师:</strong></td>
+    <td><%= @subject.mentor %></td>
+  </tr>
+</table>
+<%= link_to '编辑', edit_subject_path(@subject),:class => "btn btn-info" %>
+<%= link_to '返回', subjects_path,:class => "btn" %>

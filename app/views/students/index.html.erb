@@ -1,7 +1,9 @@
 <h3>学生列表</h3>
+<%=render "search"%>
 <table class="table">
   <thead>
     <tr>
+      <th>序号</th>
       <th>学号</th>
       <th>姓名</th>
       <th>性别</th>
@@ -12,8 +14,9 @@
   </thead>
 
   <tbody>
-    <% @students.each do |student| %>
+    <% @students.each_with_index do |student, index| %>
       <tr>
+        <td><%= (params[:page] ? params[:page].to_i-1 : 0)*20+index+1%></td>
         <td><%= student.stuid %></td>
         <td><%= student.name %></td>
         <td><%= sex_text student.sex %></td>
@@ -30,10 +33,10 @@
     <% end %>
   </tbody>
 </table>
-
-<br>
+  <%= will_paginate @students%>
 
 <%= link_to '新建学生账户', new_student_path, :class=>"btn btn-success" %>
+<%= link_to '导出模板', export_student_path, :class=>"btn" %>
 <%= render 'import' %>
 <br>
 <br>

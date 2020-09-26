@@ -5,7 +5,10 @@ class StudentsController < BackyardController
   # GET /students
   # GET /students.json
   def index
+    @search = OpenStruct.new params[:search]
     @students = Student.all
+    @students = build_search(@students, @search)
+    @students = @students.paginate(page:params[:page])
   end
 
   # GET /students/1
@@ -68,19 +71,39 @@ class StudentsController < BackyardController
   end
 
   def import
+    error = []
     url = params["data_file"].tempfile.path
     csv_text = File.read(url).force_encoding("gbk").encode("utf-8", replace: nil)
-    CSV.parse(csv_text, :headers => true) do |row|
-      byebug
-     puts row    
-    end 
-    respond_to do |format|
-      format.html { redirect_to students_url, notice: '导入成功' }
-      format.json { head :no_content }
+    begin
+      ActiveRecord::Base.transaction do
+        CSV.parse(csv_text, :headers => true) do |row|
+          a = row.headers - ["学号", "姓名", "性别", "密码", "年级"]
+          raise '标题有问题' unless a.blank?
+          Student.create!({stuid: row["学号"], name: row["姓名"], password: row['密码'], sex: row["性别"], grade: row["年级"]})
+        end
+      end
+      redirect_to students_url, notice: '导入成功' and return
+    rescue Exception => e
+      redirect_to students_url,notice: e.message
     end
   end
+
+  def export 
+     send_file("#{Rails.root}/public/template/student.csv",
+              filename: "student.csv",
+              type: "application/csv")
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
+    def build_search(records, search)
+      records = records.where(name: search.name) if search.name.present?
+      records = records.where(profession: search.profession) if search.profession.present?
+      records = records.where(grade: search.grade) if search.grade.present?
+
+      records
+    end
+
     def set_student
       @student = Student.find(params[:id])
     end

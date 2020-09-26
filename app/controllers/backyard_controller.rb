@@ -19,4 +19,8 @@ class BackyardController < ApplicationController
 	def set_logged_teacher
       @logged_teacher=logged_teacher
     end
+
+   def current_user
+   	 logged_teacher
+   end
 end

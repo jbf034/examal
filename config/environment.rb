@@ -12,6 +12,10 @@ NAVS=[
 	{icon: "male", text: "教师管理", controller: "teachers",children: [
 		{icon: "info" , text:"教师信息",action:"index"}
 		]},
+	{icon: "male", text: "试卷管理", controller: "subjects",children: [
+		{icon: "info" , text:"试卷管理",action:"index"}
+		]},
+
 	{icon: "database", text: "题库管理", controller: "questions",children: [
 		{icon: "list" , text:"题库列表",action:"index"}
 		]},

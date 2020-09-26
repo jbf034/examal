@@ -23,6 +23,7 @@ Rails.application.routes.draw do
 
   resources :students
   post "import_student" => 'students#import'
+  get "export_student" => 'students#export'
 
   controller :sessions do
     get "login"=>'sessions#new'
@@ -35,6 +36,7 @@ Rails.application.routes.draw do
   get 'admin/' => 'admin#index'
   resources :teachers
 
+   resources :subjects
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 

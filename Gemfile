@@ -43,7 +43,7 @@ gem 'smarter_csv'
 
 # 字体图标
 gem "font-awesome-rails"
-
+gem "will_paginate"
 group :development do
   gem "byebug"
   gem "better_errors"

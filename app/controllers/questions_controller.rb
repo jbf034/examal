@@ -15,6 +15,7 @@ class QuestionsController < BackyardController
 
   # GET /questions/new
   def new
+    @subjects = current_user.subjects
     @question = Question.new
     respond_to do |format|
       format.html
@@ -32,6 +33,7 @@ class QuestionsController < BackyardController
   # POST /questions
   # POST /questions.json
   def create
+    question_params["subject_id"] = params["question"]["subject_id"]
     @question = Question.new(question_params)
 
     respond_to do |format|
@@ -83,7 +85,7 @@ class QuestionsController < BackyardController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def question_params
-      prm=params.require(:question).permit(:title, :description, :options,  :difficulty,answer: [])
+      prm=params.require(:question).permit(:title, :subject_id, :description, :options,  :difficulty,answer: [])
       prm[:teacher_id]=@logged_teacher.id
       answer=""
       count=0

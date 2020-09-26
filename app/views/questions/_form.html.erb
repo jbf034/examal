@@ -13,6 +13,11 @@
 
 <table class="span12">
   <tr>
+    <td class="span2"><%= f.label :title,"试卷" %></td>
+    <td class="span10"><%= f.select :subject_id, @subjects.map{ |c| [c.title, c.id] },placeholder:"请选择试题的题目",:class=>"span6" %></td>
+  </tr>
+
+  <tr>
     <td class="span2"><%= f.label :title,"题目" %></td>
     <td class="span10"><%= f.text_field :title,placeholder:"请输入试题的题目",:class=>"span6" %></td>
   </tr>

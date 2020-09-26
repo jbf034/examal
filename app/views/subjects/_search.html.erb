@@ -1,0 +1,6 @@
+<%= form_tag("/subjects", method: "get") do %>
+  <%= label_tag "title", "标题:" ,class:'search' %>
+  <%= text_field_tag "search[title]", @search.title, class:'search' %>
+
+  <%= submit_tag "查找", class:"btn" %>
+<% end %>
