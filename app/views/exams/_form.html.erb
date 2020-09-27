@@ -21,12 +21,22 @@
     <td><%= f.label :description,"简介" %></td>
     <td><%= f.text_area :description,:class=>"span6" %></td>
   </tr>
+
+  <tr>
+    <td><%= f.label :grade, "所考班级" %></td>
+    <td>
+      <% @grade.each do |gr| %>  
+          <label class="grade_checkbox">
+            <%= check_box_tag 'grade[]', gr%>
+            <%= gr%>
+          </label>
+      <% end %> 
+    </td>
+  </tr>
+
   <tr>
     <td><%= f.label :valid_from,"起始时间" %></td>
-
-
     <td>
-
 <div class="controls input-append date form_date" data-date="" data-date-format="yyyy-mm-dd hh:ii" data-link-field="exam_valid_from" data-link-format="yyyy-mm-dd hh:ii">
      <input size="16" type="text" value="<%= Time.now.strftime("%Y-%m-%d %H:%M") %>" readonly>
      <span class="add-on"><i class="fa fa-th"></i></span>

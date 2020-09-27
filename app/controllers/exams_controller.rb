@@ -16,8 +16,8 @@ class ExamsController < BackyardController
 
   # GET /exams/new
   def new
-    @exam = Exam.new
-    
+    @grade = current_user.students.pluck(:grade).uniq
+    @exam = Exam.new   
   end
 
   def optbox
@@ -36,10 +36,11 @@ class ExamsController < BackyardController
   # POST /exams
   # POST /exams.json
   def create
-
+    grades = params["grade"]
     @exam = Exam.new(exam_params)
     result=@exam.save
-    @exam.add_questions_to_exam(@validated_question)
+    student_ids = Student.where("grade in (?)", params["grade"]).ids
+    @exam.add_questions_to_exam(@validated_question) #考试题目
     respond_to do |format|
       if result
         format.html { redirect_to @exam, notice: "已成功建立考试“#{@exam.name}.”" }

@@ -7,7 +7,7 @@ class Teacher < ActiveRecord::Base
 	has_many :questions,:dependent => :destroy
 	has_many :exams,:dependent => :destroy
 	has_many :subjects
-
+	has_many :students
 	attr_accessor :password_confirmation
 	attr_reader :password
 

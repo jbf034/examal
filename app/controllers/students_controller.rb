@@ -29,8 +29,8 @@ class StudentsController < BackyardController
   # POST /students
   # POST /students.json
   def create
-    @student = Student.new(student_params)
 
+    @student = current_user.students.new(student_params)
     respond_to do |format|
       if @student.save
         format.html { redirect_to @student, notice: "已成功创建学生账户：#{@student.name}. "}
@@ -78,8 +78,8 @@ class StudentsController < BackyardController
       ActiveRecord::Base.transaction do
         CSV.parse(csv_text, :headers => true) do |row|
           a = row.headers - ["学号", "姓名", "性别", "密码", "年级"]
-          raise '标题有问题' unless a.blank?
-          Student.create!({stuid: row["学号"], name: row["姓名"], password: row['密码'], sex: row["性别"], grade: row["年级"]})
+          raise "不存在#{a.to_s}-标题" unless a.blank?
+          Student.create!({teacher_id: current_user.id, stuid: row["学号"], name: row["姓名"], password: row['密码'], sex: row["性别"], grade: row["年级"]})
         end
       end
       redirect_to students_url, notice: '导入成功' and return

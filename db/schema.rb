@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20200927060002) do
+ActiveRecord::Schema.define(version: 20200927131758) do
 
   create_table "contests", force: true do |t|
     t.integer  "exam_id"
@@ -65,9 +65,10 @@ ActiveRecord::Schema.define(version: 20200927060002) do
     t.string   "hashed_password"
     t.boolean  "sex"
     t.string   "profession"
-    t.integer  "grade"
+    t.string   "grade"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "teacher_id"
   end
 
   create_table "subjects", force: true do |t|

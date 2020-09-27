@@ -18,7 +18,6 @@ class PanelController < FrontController
   	@current=Exam.where("valid_from <= ? and valid_to >= ?",now,now)
   	@not_ready=Exam.where("valid_from > ?",now)
   	@old=Exam.where("valid_to < ?",now)
-
   end
 
   def info
@@ -26,11 +25,11 @@ class PanelController < FrontController
   end
 
   def exam
-
   	student=@logged_student
   	if student.exams.find_by_id(params[:id])
   		redirect_to panel_untaken_url,notice:"您已经参加过这门考试"
   	end
+
   	begin
   		@exam=Exam.find(params[:id])
   	rescue Exception => e
@@ -38,6 +37,7 @@ class PanelController < FrontController
   	end
 
   end
+
   def check
   	student=@logged_student
   	@answer=params[:answer]

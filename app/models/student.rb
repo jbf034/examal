@@ -1,7 +1,6 @@
 require 'digest/sha2'
 class Student < ActiveRecord::Base
-	validates_presence_of :stuid,:name,message: "不能为空"
-	validates_numericality_of :grade,message: "必须为一个数字",allow_nil: true
+	validates_presence_of :stuid,:grade, :name,message: "不能为空"
 	# true-男 false-女
 	validates_inclusion_of :sex, in: [true,false],message:"不是一个合法的值",allow_nil: true
 	validates_uniqueness_of :stuid,message:"已经存在，请换一个学号"
