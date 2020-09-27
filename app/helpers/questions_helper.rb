@@ -15,4 +15,16 @@ module QuestionsHelper
 		end
 	end
 
+  def qtype_level(number)
+		if number == 1
+			content_tag :span,number.to_s+"单选",:class=>"label label-success small"
+		elsif number == 2
+			content_tag :span,number.to_s+"多选",:class=>"label label-success"
+    elsif number == 3
+			content_tag :span,number.to_s+"判断",:class=>"label label-success"
+    else
+			content_tag :span,number.to_s,:class=>"label label-success"
+    end
+  end
+
 end

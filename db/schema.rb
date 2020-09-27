@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20200926115710) do
+ActiveRecord::Schema.define(version: 20200927060002) do
 
   create_table "contests", force: true do |t|
     t.integer  "exam_id"
@@ -54,6 +54,7 @@ ActiveRecord::Schema.define(version: 20200926115710) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "subject_id"
+    t.integer  "qtype"
   end
 
   add_index "questions", ["teacher_id", "difficulty"], name: "index_questions_on_teacher_id_and_difficulty", using: :btree

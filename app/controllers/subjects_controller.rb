@@ -1,6 +1,6 @@
 class SubjectsController < BackyardController
   before_action :set_subject, only: [:show, :edit, :update, :destroy]
-  before_action :edit_or_delete_right,only:[:edit,:update, :destroy]
+  before_action :edit_or_delete_right,only:[:show, :edit,:update, :destroy]
   # GET /subjects
   # GET /subjects.json
   def index
@@ -13,6 +13,7 @@ class SubjectsController < BackyardController
   # GET /subjects/1.json
   def show
     @subject=Subject.find_by_id(params[:id])
+    @questions = @subject.questions.order("qtype, created_at DESC").paginate(page: params[:page])
   end
 
   # GET /subjects/new

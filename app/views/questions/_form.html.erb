@@ -10,20 +10,25 @@
     </ul>
   </div>
   <% end %>
-
 <table class="span12">
   <tr>
     <td class="span2"><%= f.label :title,"试卷" %></td>
-    <td class="span10"><%= f.select :subject_id, @subjects.map{ |c| [c.title, c.id] },placeholder:"请选择试题的题目",:class=>"span6" %></td>
+    <td class="span10"><%= f.select :subject_id, (@subjects || []).map{ |c| [c.title, c.id] }, {include_blank: false}, placeholder:"请选择试题的题目",:class=>"span6" %></td>
   </tr>
 
   <tr>
     <td class="span2"><%= f.label :title,"题目" %></td>
     <td class="span10"><%= f.text_field :title,placeholder:"请输入试题的题目",:class=>"span6" %></td>
   </tr>
+
+  <tr>
+    <td class="span2"><%= f.label :qtype,"题目类型" %></td>
+    <td class="span10"><%= f.select :qtype, [["单选",1],["多选",2],["判断",3]], placeholder:"题目类型",:class=>"span6" %></td>
+  </tr>
+
   <tr>
     <td><%= f.label :description,"问题描述" %></td>
-    <td><%= f.text_area :description,:class=>"span6" %></td>
+    <td><%= f.text_area :description,:class=>"span8" %></td>
   </tr>
   <tr>
     <td><%= f.label :options,"选项" %></td>
@@ -39,7 +44,7 @@
   <tr>
     <td valign="top"><%= f.label :answer,"答案" %></td>
     <td>
-     <%= f.select :answer, [], {include_blank: false},{multiple:true,:class=>"span6"} %>
+     <%= f.select :answer, [], {include_blank: false},{multiple:true,:class=>"span8"} %>
     </td>
   </tr>
   <tr>

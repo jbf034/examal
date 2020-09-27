@@ -16,7 +16,7 @@
   <tbody>
     <% @students.each_with_index do |student, index| %>
       <tr>
-        <td><%= (params[:page] ? params[:page].to_i-1 : 0)*20+index+1%></td>
+        <td><%= serial(params[:page], index)%></td>
         <td><%= student.stuid %></td>
         <td><%= student.name %></td>
         <td><%= sex_text student.sex %></td>

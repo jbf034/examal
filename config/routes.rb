@@ -36,7 +36,9 @@ Rails.application.routes.draw do
   get 'admin/' => 'admin#index'
   resources :teachers
 
-   resources :subjects
+  resources :subjects
+  post "import_question" => 'questions#import'
+  get "export_question" => 'questions#export'
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 

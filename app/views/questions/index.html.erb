@@ -9,6 +9,7 @@
 <table id="datatable" class="table">
   <thead>
     <tr>
+      <th width="20px">序号</th>
       <th width="200px">题目名称</th>
       <th width="100px">介绍</th>
       <th width="180px">选项</th>
@@ -20,8 +21,9 @@
   </thead>
 
   <tbody>
-    <% @questions.each do |question| %>
+    <% @questions.each_with_index do |question,index| %>
       <tr class="<%= cycle("odd", "even") %>">
+        <td><%= serial(params[:page],index)%></td>
         <td><%= truncate question.title,length:29 %></td>
         <td><%= question.description %></td>
         <td><%= truncate question.options,length:48 %></td>
@@ -39,6 +41,7 @@
     <% end %>
   </tbody>
 </table>
+  <%= will_paginate @questions%>
 
 <br>
 <br><br>

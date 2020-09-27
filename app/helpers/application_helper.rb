@@ -36,4 +36,8 @@ module ApplicationHelper
 		result+="#{times}秒"
 		result
 	end
+
+  def serial(page, index)
+    (page ? page.to_i-1:0) * 20 + index + 1
+  end
 end

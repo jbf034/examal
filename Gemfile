@@ -39,8 +39,6 @@ gem 'spring',        group: :development
 # gem 'debugger', group: [:development, :test]
 
 gem 'mysql2'
-gem 'smarter_csv'
-
 # 字体图标
 gem "font-awesome-rails"
 gem "will_paginate"
