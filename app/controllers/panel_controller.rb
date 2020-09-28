@@ -6,10 +6,7 @@ class PanelController < FrontController
       @average+=contest.mark
     end
     now=Time.now+8*3600
-  	exams=@logged_student.exams.untaken.where("valid_from <= ? and valid_to >= ?",now,now)
-
-    @current = Subject.joins(:exams).where("exams.id in (?)", exams.ids)
-    byebug
+  	@current = @logged_student.exams.untaken.where("valid_from <= ? and valid_to >= ?",now,now)
   end
 
   def taken
