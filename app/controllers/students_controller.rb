@@ -29,7 +29,6 @@ class StudentsController < BackyardController
   # POST /students
   # POST /students.json
   def create
-
     @student = current_user.students.new(student_params)
     respond_to do |format|
       if @student.save

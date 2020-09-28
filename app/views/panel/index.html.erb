@@ -38,7 +38,8 @@
 
 <table class="table table-striped">
 	<thead>
-		<th>考试名称</th>
+		<th>所属考试</th>
+		<th>试卷名称</th>
 		<th>简介</th>
 		<th>试题数量</th>
 		<th>平均难度</th>
@@ -46,19 +47,16 @@
 		<th></th>
 	</thead>
 	<tbody>
-		<% 	@current.each do |exam| %>
-		<% unless Contest.where(exam_id:exam.id,student_id:@logged_student.id).first %>
+		<% 	@current.each do |sb| %>
 		<tr>
-			<td><%= exam.name %></td>
-			<td><%= exam.description %></td>
-			<td><%= exam.questions.size %></td>
-			<td><%= difficulty_level exam.average_difficulty %></td>
-			<td><%= exam.teacher.name %></td>
+			<td><%= sb.title%></td>
+			<td><%= sb.remark%></td>
+			<td><%= sb.questions.count%></td>
+			<td><%= sb.teacher.name %></td>
 			<td>
-				<%= link_to "开始考试",panel_exam_path(exam),:class=>"btn btn-primary" %>
+        <%= link_to "开始考试",panel_exam_path({id:sb, exam_id: sb.exam_id}),:class=>"btn btn-primary" %>
 			</td>
 		</tr>
-		<% end %>
 		<% end %>
 	</tbody>
 </table>

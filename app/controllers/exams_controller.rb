@@ -1,7 +1,7 @@
 class ExamsController < BackyardController
   before_action :set_exam, only: [:show, :edit, :update, :destroy]
   before_action :set_question,only:[:new,:edit,:create,:update]
-  before_action :edit_or_delete_right,only:[:edit, :update]
+  before_action :edit_or_delete_right,only:[:edit, :update, :destroy]
   # GET /exams
   # GET /exams.json
   def index
@@ -17,6 +17,9 @@ class ExamsController < BackyardController
   # GET /exams/new
   def new
     @grade = current_user.students.pluck(:grade).uniq
+    @subjects = current_user.subjects.select(:id, :title)
+    @students = Student.where("grade in (?)", params["grade"])
+
     @exam = Exam.new   
   end
 
@@ -31,16 +34,25 @@ class ExamsController < BackyardController
     unless @edit_or_delete_right
       redirect_to exams_url,notice:"您无权修改别人编写的考试"
     end
+    @grade = current_user.students.pluck(:grade).uniq
+    @subjects = current_user.subjects.select(:id, :title)
+    @students = Student.where("grade in (?)", params["grade"])
   end
 
   # POST /exams
   # POST /exams.json
   def create
     grades = params["grade"]
+    subjects = params["subject"]
     @exam = Exam.new(exam_params)
     result=@exam.save
-    student_ids = Student.where("grade in (?)", params["grade"]).ids
-    @exam.add_questions_to_exam(@validated_question) #考试题目
+
+    @students = Student.where("grade in (?)", grades)
+    @subjects = current_user.subjects.where("id in (?)", subjects)
+
+    @exam.add_students_to_exam(@students)
+    @exam.add_subjects_to_exam(@subjects)
+    #@exam.add_questions_to_exam(@validated_question) #考试题目
     respond_to do |format|
       if result
         format.html { redirect_to @exam, notice: "已成功建立考试“#{@exam.name}.”" }
@@ -56,11 +68,23 @@ class ExamsController < BackyardController
   # PATCH/PUT /exams/1.json
   def update
     unless @edit_or_delete_right
-      redirect_to exams_url,notice:"您无权修改别人编写的考试"
+      redirect_to exams_url,notice:"您无权修改别人编写的考试" and return 
     end
+
     parsed_param=exam_params
-    @exam.questions.delete_all
-    @exam.add_questions_to_exam(@validated_question)
+
+    grades = params["grade"]
+    @exam.contests.delete_all
+    @students = Student.where("grade in (?)", params["grade"])
+    @exam.add_students_to_exam(@students)
+
+    subjects = params["subject"]
+    @exam.subjects.delete_all
+    @subjects = current_user.subjects.where("id in (?)", subjects)
+    @exam.add_subjects_to_exam(@subjects)
+
+#    @exam.questions.delete_all
+#    @exam.add_questions_to_exam(@validated_question)
     respond_to do |format|
       if @exam.update(parsed_param)
         format.html { redirect_to @exam, notice: "已成功更新考试“#{@exam.name}.”" }
@@ -76,7 +100,7 @@ class ExamsController < BackyardController
   # DELETE /exams/1.json
   def destroy
     unless @edit_or_delete_right
-      redirect_to exams_url,notice:"您无权删除别人编写的考试"
+      redirect_to exams_url,notice:"您无权删除别人编写的考试" and return
     end
     @exam.destroy
     respond_to do |format|
@@ -116,6 +140,6 @@ class ExamsController < BackyardController
     end
 
     def edit_or_delete_right
-        @edit_or_delete_right=@logged_teacher.is_admin? || @logged_teacher.id==@exam.teacher.id
+        @edit_or_delete_right=current_user.is_admin? || current_user.id == @exam.teacher.id
     end
 end

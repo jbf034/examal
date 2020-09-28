@@ -13,6 +13,10 @@
     <td><%= @exam.description %></td>
   </tr>
   <tr>
+    <td><strong>面向班级:</strong></td>
+    <td><%= @exam.grade.join(',')%></td>
+  </tr>
+  <tr>
     <td><strong>起始时间:</strong></td>
     <td><%= time2str @exam.valid_from %></td>
   </tr>
@@ -27,9 +31,9 @@
   <tr>
     <td><strong>试题:</strong></td>
     <td>
-        <% unless @exam.questions.empty? %>
-          <% @exam.questions.each do |question| %>
-          <div style="margin-bottom:5px;"><%= difficulty_level question.difficulty %> <%= truncate question.title,length:16 %>  </div>
+        <% unless @exam.subjects.empty? %>
+          <% @exam.subjects.each do |subject| %>
+          <div style="margin-bottom:5px;"><%= truncate subject.title,length:16 %>  </div>
           <% end %>
         <% end %>
     </td>

@@ -1,37 +1,40 @@
 class PanelController < FrontController
   def index
-    @exams=@logged_student.exams
+    @exams=@logged_student.exams.taken
     @average=0
-    @logged_student.contests.each do |contest|
+    @logged_student.exams.taken.each do |contest|
       @average+=contest.mark
     end
     now=Time.now+8*3600
-    @current=Exam.where("valid_from <= ? and valid_to >= ?",now,now)
+  	exams=@logged_student.exams.untaken.where("valid_from <= ? and valid_to >= ?",now,now)
+
+    @current = Subject.joins(:exams).where("exams.id in (?)", exams.ids)
+    byebug
   end
 
   def taken
-    @exams=@logged_student.exams
+    @exams=@logged_student.exams.taken
   end
 
   def untaken
   	now=Time.now+8*3600
-  	@current=Exam.where("valid_from <= ? and valid_to >= ?",now,now)
-  	@not_ready=Exam.where("valid_from > ?",now)
-  	@old=Exam.where("valid_to < ?",now)
+  	@current=@logged_student.exams.where("valid_from <= ? and valid_to >= ?",now,now)
+  	@not_ready=@logged_student.exams.where("valid_from > ?",now)
+  	@old=@logged_student.exams.where("valid_to < ?",now)
   end
 
   def info
   	@student=@logged_student
   end
 
-  def exam
+  def exam #开始考试
   	student=@logged_student
-  	if student.exams.find_by_id(params[:id])
+  	if student.exams.taken.find_by_id(params[:exam_id])
   		redirect_to panel_untaken_url,notice:"您已经参加过这门考试"
   	end
 
   	begin
-  		@exam=Exam.find(params[:id])
+  		@exam=student.exams.find(params[:id])
   	rescue Exception => e
   		redirect_to panel_untaken_url,notice:"没有找到这门考试"
   	end
