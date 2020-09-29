@@ -4,8 +4,9 @@ class Exam < ActiveRecord::Base
 	validates_numericality_of :timespan,message:"应当是一个数字"
 	validates_format_of :valid_from,:valid_to,with:/\d{4}-\d{2}-\d{2}/,message:"不是一个合法的日期格式'YYYY-mm-dd hh-MM'"
 	belongs_to :teacher
+
 	has_and_belongs_to_many :questions
-	has_and_belongs_to_many :subjects, :dependent=>:destroy
+	has_and_belongs_to_many :subjects
 
 	has_many :contests
 	has_many :students,through: :contests
@@ -13,13 +14,13 @@ class Exam < ActiveRecord::Base
   scope :taken,-> {where('contests.mark is not null')}
   scope :untaken,-> {where('contests.mark is null')}
 
-	def add_questions_to_exam(qsts)
-		unless id.nil? || qsts.nil?
-			qsts.each do |question|
-				questions<<question
+	def add_subjects_to_result(stu_ids, sub_ids)
+		unless id.nil? || stu_ids.blank? || sub_ids.blank?
+			sub_ids.each do |sub_id|
+        stu_ids.each do |stu_id|
+          Result.create!({student_id: stu_id, subject_id: sub_id})
+        end
 			end
-		else
-        errors.add(:题目列表,"不能为空")
 		end
 	end
 
@@ -33,13 +34,11 @@ class Exam < ActiveRecord::Base
 		end
 	end
 
-	def add_students_to_exam(students)
-		unless id.nil?
-      ActiveRecord::Base.transaction do 
-			  students.each do |student|
-				  contests.create!(student_id: student.id)
+	def add_students_to_exam(ids)
+		unless id.nil? || ids.blank?
+			  ids.each do |id|
+				  contests.create!(student_id: id)
 			  end
-      end
 		end
 	end
 

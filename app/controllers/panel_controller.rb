@@ -25,6 +25,7 @@ class PanelController < FrontController
   end
 
   def exam #开始考试
+    byebug
   	student=@logged_student
   	if student.exams.taken.find_by_id(params[:exam_id])
   		redirect_to panel_untaken_url,notice:"您已经参加过这门考试"

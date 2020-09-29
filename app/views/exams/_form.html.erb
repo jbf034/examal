@@ -27,7 +27,7 @@
     <td>
       <% (@grade || []).each do |gr| %>  
         <label class="grade_checkbox">
-        <%= check_box_tag 'grade[]', gr%>
+        <%= check_box_tag 'grade[]', gr, @select_grade.include?(gr)%>
         <%= gr%>
       </label>
     <% end %> 
@@ -72,7 +72,7 @@
     <td>
       <% (@subjects || []).each do |sb| %>  
         <label class="grade_checkbox">
-        <%= check_box_tag 'subject[]', sb.id%>
+        <%= check_box_tag 'subject[]', sb.id, @select_sub.include?(sb.id)%>
         <%= sb.title%>
       </label>
     <% end %> 
@@ -103,42 +103,6 @@
 </table>
 <div class="clear"></div>
 <br><hr><br>
-<table class="table" id="datatable">
-  <thead>
-    <tr>
-      <th>题目名称</th>
-      <th>介绍</th>
-      <th>选项</th>
-      <th>难度系数</th>
-      <th>最近更新时间</th>
-      <th>提供者</th>
-      <th width="60px"></th>
-    </tr>
-  </thead>
-  <tbody>
-  <% @questions.each do |question| %>
-    <tr class="<%= cycle("odd", "even") %>">
-    <td><%= truncate question.title,length: 20 %></td>
-    <td><%= question.description %></td>
-    <td><%= question.options %></td>
-    <td><%= difficulty_level question.difficulty %></td>
-    <td><%= question.updated_at.strftime("%Y-%m-%d") %></td>
-    <td><%= question.teacher.name if question.teacher %></td>
-    <td>
-      <% if question.exams.where(id:@exam.id).count>0 %>
-        <%= link_to "已添加",exam_optbox_path(question),remote:true,:class=>"btn btn-small","data-id"=> question.id,disabled:true %>
-    <% else %>
-        <%= link_to "添加",exam_optbox_path(question),remote:true,:class=>"btn btn-small","data-id"=> question.id,disabled:false %>
-    <% end %>
-    </td>
-  </tr>
-<% end %>
-  </tbody>
-</table>
-<br><br>
-
-
-
 
 <div class="actions">
   <%= f.submit "提交",:class=>"btn btn-success btn-large" %>

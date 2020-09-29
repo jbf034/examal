@@ -11,7 +11,7 @@ class ExamsController < BackyardController
   # GET /exams/1
   # GET /exams/1.json
   def show
-    
+
   end
 
   # GET /exams/new
@@ -34,25 +34,26 @@ class ExamsController < BackyardController
     unless @edit_or_delete_right
       redirect_to exams_url,notice:"您无权修改别人编写的考试"
     end
+     
     @grade = current_user.students.pluck(:grade).uniq
     @subjects = current_user.subjects.select(:id, :title)
-    @students = Student.where("grade in (?)", params["grade"])
+    @select_sub = @exam.subjects.ids
+    @select_grade = @exam.students.pluck(:grade).uniq  
   end
 
   # POST /exams
   # POST /exams.json
   def create
     grades = params["grade"]
-    subjects = params["subject"]
-    @exam = Exam.new(exam_params)
-    result=@exam.save
-
-    @students = Student.where("grade in (?)", grades)
-    @subjects = current_user.subjects.where("id in (?)", subjects)
-
-    @exam.add_students_to_exam(@students)
-    @exam.add_subjects_to_exam(@subjects)
-    #@exam.add_questions_to_exam(@validated_question) #考试题目
+    subjects = params["subject"].map{|x| x.to_i}
+    ActiveRecord::Base.transcation do
+      @exam = Exam.new(exam_params)
+      result=@exam.save
+      @students = Student.where("grade in (?)", grades)
+      @exam.add_students_to_exam(@students.ids)
+      @exam.add_subjects_to_exam(@subjects)
+      @exam.add_subjects_to_result(@students.ids, subjects) #分发试卷
+    end
     respond_to do |format|
       if result
         format.html { redirect_to @exam, notice: "已成功建立考试“#{@exam.name}.”" }
@@ -72,21 +73,33 @@ class ExamsController < BackyardController
     end
 
     parsed_param=exam_params
+    grades = params["grade"] || []
+    subjects = (params["subject"] || []).map{|x| x.to_i}
 
-    grades = params["grade"]
-    @exam.contests.delete_all
-    @students = Student.where("grade in (?)", params["grade"])
-    @exam.add_students_to_exam(@students)
+    contests = @exam.contests
+    @students = Student.where("grade in (?)", grades)
+    del_ids = contests.pluck(:student_id) - @students.ids
+    new_ids = @students.ids - contests.pluck(:student_id)
 
-    subjects = params["subject"]
-    @exam.subjects.delete_all
-    @subjects = current_user.subjects.where("id in (?)", subjects)
-    @exam.add_subjects_to_exam(@subjects)
+    del_sub = @exam.subjects.ids - subjects 
+    new_sub = subjects - @exam.subjects.ids
+    
+    new_subjects = Subject.where("id in (?)",new_sub)
 
-#    @exam.questions.delete_all
-#    @exam.add_questions_to_exam(@validated_question)
+    ActiveRecord::Base.transaction do
+      contests.where("student_id in (?)",del_ids).delete_all
+      byebuy
+      @exam.subjects.where("subject_id in (?)",del_sub).delete_all
+      Result.where("student_id in (?)", @students.ids).where("subject_id in (?)", del_sub).delete_all
+
+      @exam.add_students_to_exam(new_ids)
+      @exam.add_subjects_to_exam(new_subjects)
+      @exam.add_subjects_to_result(new_ids,new_sub) #分发试卷
+      @exam.update!(parsed_param)
+    end
+
     respond_to do |format|
-      if @exam.update(parsed_param)
+      if @exam.errors.blank?
         format.html { redirect_to @exam, notice: "已成功更新考试“#{@exam.name}.”" }
         format.json { render :show, status: :ok, location: @exam }
       else
@@ -110,36 +123,36 @@ class ExamsController < BackyardController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_exam
-      @exam = Exam.find(params[:id])
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_exam
+    @exam = Exam.find(params[:id])
+  end
 
-    def set_question
-      @questions= Question.order(updated_at: :desc).all
-    end
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def exam_params
-      prm=params.require(:exam).permit(:name, :description, :valid_from, :valid_to, :timespan, :teacher_id)
-      questions=params.permit(question_list: [])
-      prm[:teacher_id]=@logged_teacher.id
-      @validated_question=[]
-      unless questions["question_list"].nil?
-        sum=0
-        questions["question_list"].each do |question_id|
-          question=Question.find_by_id(question_id)
-          unless question.nil?
-            @validated_question << question
-            sum+=question.difficulty
-          end
+  def set_question
+    @questions= Question.order(updated_at: :desc).all
+  end
+  # Never trust parameters from the scary internet, only allow the white list through.
+  def exam_params
+    prm=params.require(:exam).permit(:name, :description, :valid_from, :valid_to, :timespan, :teacher_id)
+    questions=params.permit(question_list: [])
+    prm[:teacher_id]=@logged_teacher.id
+    @validated_question=[]
+    unless questions["question_list"].nil?
+      sum=0
+      questions["question_list"].each do |question_id|
+        question=Question.find_by_id(question_id)
+        unless question.nil?
+          @validated_question << question
+          sum+=question.difficulty
         end
-        prm[:average_difficulty]=sum.to_f/@validated_question.size.to_f
-
       end
-      prm
-    end
+      prm[:average_difficulty]=sum.to_f/@validated_question.size.to_f
 
-    def edit_or_delete_right
-        @edit_or_delete_right=current_user.is_admin? || current_user.id == @exam.teacher.id
     end
+    prm
+  end
+
+  def edit_or_delete_right
+    @edit_or_delete_right=current_user.is_admin? || current_user.id == @exam.teacher.id
+  end
 end
