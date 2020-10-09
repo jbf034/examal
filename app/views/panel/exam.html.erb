@@ -1,13 +1,15 @@
 <div class="page-header">
   <h2><%= @exam.name %></h2>
+  <h4><%= @subject.title%></h4>
 </div>
 <%= form_tag do %>
+<%= hidden_field_tag :subject_id, params[:subject_id] %>  
 <table class="table">
  <% count=0 
  	serize=[]
  	("A".."Z").each{|x| serize<<x}
  %>
-	<% @exam.questions.each do |question| %>
+	<% @subject.questions.each do |question| %>
 	<tr>
 		<td rowspan="2" width="60px"><%= count+1 %></td>
 		<td><%= question.title %></td>

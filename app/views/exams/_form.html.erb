@@ -27,7 +27,7 @@
     <td>
       <% (@grade || []).each do |gr| %>  
         <label class="grade_checkbox">
-        <%= check_box_tag 'grade[]', gr, @select_grade.include?(gr)%>
+        <%= check_box_tag 'grade[]', gr, @select_grade && @select_grade.include?(gr)%>
         <%= gr%>
       </label>
     <% end %> 
@@ -72,32 +72,10 @@
     <td>
       <% (@subjects || []).each do |sb| %>  
         <label class="grade_checkbox">
-        <%= check_box_tag 'subject[]', sb.id, @select_sub.include?(sb.id)%>
+        <%= check_box_tag 'subject[]', sb.id, @select_sub && @select_sub.include?(sb.id)%>
         <%= sb.title%>
       </label>
     <% end %> 
-    </td>
-  </tr>
-  <tr>
-    <td>题目列表</td>
-    <td>
-      <div id="question_list">
-        <% unless @exam.questions.empty? %>
-          <% @exam.questions.each do |question| %>
-          <div class="opt_box span4">
-          <div>
-            <a class="text-error delete_box" data-id="<%= question.id %>">删除</a>
-          </div>
-          <h4><%= truncate question.title,length:16 %></h4>
-          <div>选项：<%= question.options %></div>
-          <div>答案：<%= question.answer %></div>
-          <div>难度：<%= difficulty_level question.difficulty %></div>
-          <input type="hidden" name="question_list[]" value="<%= question.id %>">
-        </div>
-      <% end %>
-      <% end %>
-      </div>
-
     </td>
   </tr>
 </table>

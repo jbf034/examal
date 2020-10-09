@@ -2,11 +2,15 @@ class PanelController < FrontController
   def index
     @exams=@logged_student.exams.taken
     @average=0
-    @logged_student.exams.taken.each do |contest|
-      @average+=contest.mark
-    end
     now=Time.now+8*3600
-  	@current = @logged_student.exams.untaken.where("valid_from <= ? and valid_to >= ?",now,now)
+    
+    @taken_subjects = @logged_student.results.where("exam_id in (?)", @exams.ids)
+    @taken_subjects.each do |result|
+      @average+=result.mark
+    end
+
+    @average = @average / (@taken_subjects.blank? ? 1 : @taken_subjects.size)
+  	@current = @logged_student.exams.where("valid_from <= ? and valid_to >= ?",now,now)
   end
 
   def taken
@@ -15,7 +19,7 @@ class PanelController < FrontController
 
   def untaken
   	now=Time.now+8*3600
-  	@current=@logged_student.exams.where("valid_from <= ? and valid_to >= ?",now,now)
+  	@current=@logged_student.exams.untaken.where("valid_from <= ? and valid_to >= ?",now,now)
   	@not_ready=@logged_student.exams.where("valid_from > ?",now)
   	@old=@logged_student.exams.where("valid_to < ?",now)
   end
@@ -25,14 +29,14 @@ class PanelController < FrontController
   end
 
   def exam #开始考试
-    byebug
   	student=@logged_student
-  	if student.exams.taken.find_by_id(params[:exam_id])
+
+  	unless student.results.find_by_subject_id(params[:subject_id]).mark.nil?
   		redirect_to panel_untaken_url,notice:"您已经参加过这门考试"
   	end
-
   	begin
-  		@exam=student.exams.find(params[:id])
+      @exam = student.exams.find_by_id(params[:id])
+  		@subject=student.subjects.find(params[:subject_id])
   	rescue Exception => e
   		redirect_to panel_untaken_url,notice:"没有找到这门考试"
   	end
@@ -42,12 +46,14 @@ class PanelController < FrontController
   def check
   	student=@logged_student
   	@answer=params[:answer]
-  	if student.exams.find_by_id(params[:id])
+
+  	unless student.results.find_by_subject_id(params[:subject_id]).mark.nil?
   		redirect_to panel_untaken_url,notice:"您已经参加过这门考试"
   		return 
   	end
   	begin
-  		exam=Exam.find(params[:id])
+  		subject=Subject.find(params[:subject_id])
+      result = student.results.find_by_subject_id(params[:subject_id])
   	rescue Exception => e
   		redirect_to panel_untaken_url,notice:"没有找到这门考试"
   		return
@@ -57,7 +63,7 @@ class PanelController < FrontController
   	@fault=0
   	@right_questions=[]
   	@fault_questions=[]
-  	exam.questions.each do |question|
+  	subject.questions.each do |question|
   		@count+=1
   		if value=@answer[question.id.to_s]
   			true_answer=question.answer.split(",")
@@ -75,6 +81,18 @@ class PanelController < FrontController
   		end
   	end
   	@mark=@right*100/@count
-  	Contest.create({exam_id:params[:id],student_id: student.id,mark: @mark})
+  	result.update({mark: @mark}) #试卷分数
+    exam = Exam.find(params[:id])
+    current_contest = student.contests.find_by_exam_id(params[:id]) #当前考试
+
+    current_subjects = student.results.where("subject_id in (?) and exam_id = ?", exam.subjects.ids, params[:id])
+    count_mark = current_subjects.pluck(:mark) #所有试卷分数组
+
+    if count_mark.compact!.nil? 
+      count_subjects_num = count_mark.sum 
+    elsif count_mark.size > 0
+      count_subjects_num = count_mark.compact!.sum 
+    end
+    current_contest.update({mark: count_subjects_num})
   end
 end

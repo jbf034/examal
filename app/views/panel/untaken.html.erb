@@ -3,33 +3,10 @@
 </div>
 <% unless @current.empty? %>
 <div class="row">
-<table class="table table-striped">
-	<thead>
-		<th>考试名称</th>
-		<th>简介</th>
-		<th>试题数量</th>
-		<th>平均难度</th>
-		<th>提供者</th>
-		<th></th>
-	</thead>
-	<tbody>
-		<% 	@current.each do |exam| %>
-		<tr>
-			<td><%= exam.name %></td>
-			<td><%= exam.description %></td>
-			<td><%= exam.questions.size %></td>
-			<td><%= difficulty_level exam.average_difficulty %></td>
-			<td><%= exam.teacher.name %></td>
-			<td>
-			<% if contest=Contest.where(exam_id:exam.id,student_id:@logged_student.id).first %>
-				<%= mark_tag contest.mark %> 
-			<% else %>
-				<%= link_to "开始考试",panel_exam_path(exam),:class=>"btn btn-primary" %>
-			<% end %>
-			</td>
-		</tr>
-		<% end %>
-	</tbody>
+  <table class="table table-striped">
+  <% @current.each do |exam| %>
+    <%=render "subject", exam: exam%>
+  <%end%>
 </table>
 </div>
 <% else %>
@@ -40,25 +17,10 @@
 </div>
 <% unless @not_ready.empty? %>
 <div class="row">
-<table class="table table-striped">
-	<thead>
-		<th>考试名称</th>
-		<th>简介</th>
-		<th>试题数量</th>
-		<th>平均难度</th>
-		<th>提供者</th>
-	</thead>
-	<tbody>
-		<%	@not_ready.each do |exam| %>
-		<tr>
-			<td><%= exam.name %></td>
-			<td><%= exam.description %></td>
-			<td><%= exam.questions.size %></td>
-			<td><%= difficulty_level exam.average_difficulty %></td>
-			<td><%= exam.teacher.name %></td>
-		</tr>
-		<% end %>
-	</tbody>
+  <table class="table table-striped">
+  <% @current.each do |exam| %>
+     <%=render "subject", exam: exam%>
+  <%end%>
 </table>
 </div>
 <% else %>
@@ -69,27 +31,10 @@
 </div>
 <% unless @old.empty? %>
 <div class="row">
-<table class="table table-striped">
-	<thead>
-		<th>考试名称</th>
-		<th>简介</th>
-		<th>试题数量</th>
-		<th>平均难度</th>
-		<th>提供者</th>
-	</thead>
-	<tbody>
-
-		 <% @old.each do |exam| %>
-		<tr>
-			<td><%= exam.name %></td>
-			<td><%= exam.description %></td>
-			<td><%= exam.questions.size %></td>
-			<td><%= difficulty_level exam.average_difficulty %></td>
-			<td><%= exam.teacher.name %></td>
-		</tr>
-		<% end %>
-
-	</tbody>
+  <table class="table table-striped">
+  <% @current.each do |exam| %>
+     <%=render "subject", exam: exam%>
+  <%end%>
 </table>
 </div>
 <% else %>

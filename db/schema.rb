@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20200929025421) do
+ActiveRecord::Schema.define(version: 20200930152114) do
 
   create_table "contests", force: true do |t|
     t.integer  "exam_id"
@@ -70,6 +70,7 @@ ActiveRecord::Schema.define(version: 20200929025421) do
     t.integer "student_id"
     t.integer "subject_id"
     t.decimal "mark",       precision: 5, scale: 2
+    t.integer "exam_id"
   end
 
   create_table "students", force: true do |t|

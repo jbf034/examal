@@ -4,21 +4,19 @@ class Exam < ActiveRecord::Base
 	validates_numericality_of :timespan,message:"应当是一个数字"
 	validates_format_of :valid_from,:valid_to,with:/\d{4}-\d{2}-\d{2}/,message:"不是一个合法的日期格式'YYYY-mm-dd hh-MM'"
 	belongs_to :teacher
-
-	has_and_belongs_to_many :questions
-	has_and_belongs_to_many :subjects
-
-	has_many :contests
+	has_and_belongs_to_many :subjects, :dependent => :destroy
+	has_many :contests, :dependent => :destroy
 	has_many :students,through: :contests
+  has_many :results, :dependent => :destroy
 
   scope :taken,-> {where('contests.mark is not null')}
   scope :untaken,-> {where('contests.mark is null')}
 
-	def add_subjects_to_result(stu_ids, sub_ids)
-		unless id.nil? || stu_ids.blank? || sub_ids.blank?
-			sub_ids.each do |sub_id|
+	def add_subjects_to_result(stu_ids)
+		unless id.nil? || stu_ids.blank?
+			subjects.each do |sub|
         stu_ids.each do |stu_id|
-          Result.create!({student_id: stu_id, subject_id: sub_id})
+          Result.create!({student_id: stu_id, subject_id: sub.id, exam_id:id})
         end
 			end
 		end

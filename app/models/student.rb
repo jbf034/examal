@@ -9,6 +9,7 @@ class Student < ActiveRecord::Base
 
 	validate :password_must_be_present
 	has_many :contests
+	has_many :subjects, through: :results
 	has_many :exams,through: :contests
   has_many :results, dependent: :destroy
 	def self.auth(name,password)

@@ -25,7 +25,7 @@
         <td><%= time2str exam.valid_from %></td>
         <td><%= time2str exam.valid_to %></td>
         <td><%= exam.timespan %>分钟</td>
-        <td><%= exam.questions.size %></td>
+        <td><%= exam.subjects.size %></td>
         <td><%= difficulty_level exam.average_difficulty %></td>
         <td><%= exam.teacher.name if exam.teacher %></td>
         <td><%= link_to '详情', exam %></td>

@@ -18,8 +18,8 @@ class ExamsController < BackyardController
   def new
     @grade = current_user.students.pluck(:grade).uniq
     @subjects = current_user.subjects.select(:id, :title)
-    @students = Student.where("grade in (?)", params["grade"])
 
+    @students = Student.where("grade in (?)", params["grade"])
     @exam = Exam.new   
   end
 
@@ -44,25 +44,30 @@ class ExamsController < BackyardController
   # POST /exams
   # POST /exams.json
   def create
-    grades = params["grade"]
-    subjects = params["subject"].map{|x| x.to_i}
-    ActiveRecord::Base.transcation do
-      @exam = Exam.new(exam_params)
-      result=@exam.save
-      @students = Student.where("grade in (?)", grades)
-      @exam.add_students_to_exam(@students.ids)
-      @exam.add_subjects_to_exam(@subjects)
-      @exam.add_subjects_to_result(@students.ids, subjects) #分发试卷
+    grades = params["grade"] || []
+    subjects = Subject.where("id in (?)", params["subject"])
+    @students = Student.where("grade in (?)", grades)
+    begin
+      ActiveRecord::Base.transaction do
+        @exam = Exam.new(exam_params)
+        result=@exam.save!
+        @exam.add_students_to_exam(@students.ids)
+        @exam.add_subjects_to_exam(subjects)
+        @exam.add_subjects_to_result(@students.ids) #分发试卷
+      end
+    rescue Exception => e
+      @exam.errors.add(:Base, e.message)    
     end
     respond_to do |format|
-      if result
-        format.html { redirect_to @exam, notice: "已成功建立考试“#{@exam.name}.”" }
+      if @exam.errors.blank?
+        format.html { render :show}
         format.json { render :show, status: :created, location: @exam }
       else
         format.html { render :new }
         format.json { render json: @exam.errors, status: :unprocessable_entity }
       end
     end
+
   end
 
   # PATCH/PUT /exams/1
@@ -71,7 +76,6 @@ class ExamsController < BackyardController
     unless @edit_or_delete_right
       redirect_to exams_url,notice:"您无权修改别人编写的考试" and return 
     end
-
     parsed_param=exam_params
     grades = params["grade"] || []
     subjects = (params["subject"] || []).map{|x| x.to_i}
@@ -81,29 +85,30 @@ class ExamsController < BackyardController
     del_ids = contests.pluck(:student_id) - @students.ids
     new_ids = @students.ids - contests.pluck(:student_id)
 
-    del_sub = @exam.subjects.ids - subjects 
+    del_sub = @exam.subjects.ids - subjects
     new_sub = subjects - @exam.subjects.ids
     
-    new_subjects = Subject.where("id in (?)",new_sub)
-
-    ActiveRecord::Base.transaction do
-      contests.where("student_id in (?)",del_ids).delete_all
-      byebuy
-      @exam.subjects.where("subject_id in (?)",del_sub).delete_all
-      Result.where("student_id in (?)", @students.ids).where("subject_id in (?)", del_sub).delete_all
-
-      @exam.add_students_to_exam(new_ids)
-      @exam.add_subjects_to_exam(new_subjects)
-      @exam.add_subjects_to_result(new_ids,new_sub) #分发试卷
-      @exam.update!(parsed_param)
+    new_subjects = Subject.where("id in (?)", new_sub)
+    del_subjects = Subject.where("id in (?)", del_sub)
+    begin
+      ActiveRecord::Base.transaction do
+        contests.where("student_id in (?)",del_ids).delete_all
+        @exam.subjects.delete(del_subjects)
+        Result.where("student_id in (?) or subject_id in (?)", del_ids, del_sub).delete_all
+        @exam.add_students_to_exam(new_ids)
+        @exam.add_subjects_to_exam(new_subjects)
+        @exam.add_subjects_to_result(new_ids) #分发试卷
+        @exam.update!(parsed_param)
+      end
+    rescue Exception => e
+      @exam.errors.add(:Base, e.message)    
     end
-
     respond_to do |format|
       if @exam.errors.blank?
         format.html { redirect_to @exam, notice: "已成功更新考试“#{@exam.name}.”" }
         format.json { render :show, status: :ok, location: @exam }
       else
-        format.html { render :edit }
+        format.html { redirect_to :edit }
         format.json { render json: @exam.errors, status: :unprocessable_entity }
       end
     end
