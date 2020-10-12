@@ -1,0 +1,37 @@
+version: "2"
+services:
+  mysql:
+    image: mysql:5.7
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+    volumes:
+      - "mysql_data:/var/lib/mysql"
+      - ".:/app"
+  main:
+    image: agideo/ruby:2.3-d
+    hostname: 10.133.48.34
+    volumes:
+      - ".:/app"
+      - "ruby_bundle:/usr/local/bundle"
+      - "rails_log:/app/log"
+      - "rails_tmp:/app/tmp"
+      - "~/.ssh/.ssh/id_rsa:/root/.ssh/id_rsa"
+      - "./nginx.conf:/etc/nginx/conf.d/default.conf"
+    environment:
+      - VIRTUAL_HOST=examl.local.do8.cc
+      - VIRTUAL_PORT=80
+      - DOCKER_ENV=development
+    ports:
+      - "20422:22"
+      - "20480:80"
+    depends_on:
+      - mysql
+networks:
+  default:
+    external:
+      name: default-network
+volumes:
+  mysql_data:
+  ruby_bundle:
+  rails_tmp:
+  rails_log:
