@@ -14,4 +14,4 @@
 //= require jquery_ujs
 //= require turbolinks
 //= require bootstrap.min.js
-//= require trix
+//= require jquery-fileupload/basic  

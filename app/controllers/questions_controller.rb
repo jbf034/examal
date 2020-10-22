@@ -1,4 +1,5 @@
 require 'csv' 
+require 'fileutils'
 class QuestionsController < BackyardController
   before_action :set_question, only: [:show, :edit, :update, :destroy]
   before_action :edit_or_delete_right,only:[:edit,:update, :destroy]
@@ -101,7 +102,22 @@ class QuestionsController < BackyardController
               filename: "questions.csv",
               type: "application/csv")
   end
-
+#上传图片
+  def upload
+    url = params["data_file"].tempfile.path
+    filename = params["data_file"].original_filename
+    image = MiniMagick::Image.open(url)
+    image.resize "200"
+    filename =  "#{current_user.id}_#{filename}"
+    d_file = "#{Rails.root}/public/tmp/#{filename}"
+    FileUtils.mv(image.path, d_file)
+    render json: {file: filename}
+    # Get the Image's width
+    # image.width # 4928
+    #   
+    # # Get the image's height
+    # image.height #3264
+  end
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_question

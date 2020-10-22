@@ -38,6 +38,7 @@ Rails.application.routes.draw do
 
   resources :subjects
   post "import_question" => 'questions#import'
+  post "upload_question" => 'questions#upload'
   get "export_question" => 'questions#export'
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

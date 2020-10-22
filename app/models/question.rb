@@ -5,6 +5,5 @@ class Question < ActiveRecord::Base
 	validates_length_of :title,minimum: 6,message: "至少要有6位"
 	belongs_to :teacher
   belongs_to :subject
-
 	has_and_belongs_to_many :exams
 end

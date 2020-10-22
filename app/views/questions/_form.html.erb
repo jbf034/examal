@@ -1,14 +1,14 @@
 <%= form_for(@question) do |f| %>
-<% if @question.errors.any? %>
+  <% if @question.errors.any? %>
   <div class="alert alert-block alert-error">
-    <button type="button" class="close" data-dismiss="alert">&times;</button>
-    <h5>您填写的表单有<%= @question.errors.count  %>个错误需要修正：</h5>
-    <ul>
-        <% @question.errors.full_messages.each do |message| %>
-          <li><%= message %></li>
-        <% end %>
-    </ul>
-  </div>
+  <button type="button" class="close" data-dismiss="alert">&times;</button>
+  <h5>您填写的表单有<%= @question.errors.count  %>个错误需要修正：</h5>
+  <ul>
+    <% @question.errors.full_messages.each do |message| %>
+      <li><%= message %></li>
+  <% end %>
+  </ul>
+</div>
   <% end %>
 <table class="span12">
   <tr>
@@ -33,32 +33,32 @@
   <tr>
     <td><%= f.label :options,"选项" %></td>
     <td>
-  <div class="input-append">
-  <input class="span5" type="text" id="option_str" placeholder="输入类似与‘A:选项1 B:选项2’的选项字符串，可解析成标准形式">
-  <button class="btn" type="button" id="parse_option">解析</button>
-</div>
-    <%= f.text_field :options %>
+      <div class="input-append">
+        <input class="span5" type="text" id="option_str" placeholder="输入类似与‘A:选项1 B:选项2’的选项字符串，可解析成标准形式">
+        <button class="btn" type="button" id="parse_option">解析</button>
+      </div>
+      <%= f.text_field :options %>
     </td>
     <td>
-      <input id="x" type="hidden" name="content">
-      <trix-editor id="trix" input="x"></trix-editor>
-  </td>
+      <img src="*.png" id="option_image"/>
+    </td>
   </tr>
   <tr>
     <td valign="top"><%= f.label :answer,"答案" %></td>
     <td>
-     <%= f.select :answer, [], {include_blank: false},{multiple:true,:class=>"span7"} %>
+      <%= f.select :answer, [], {include_blank: false},{multiple:true,:class=>"span7"} %>
     </td>
   </tr>
   <tr>
     <td><%= f.label :difficulty,"难度" %></td>
     <td><%= f.number_field :difficulty,min: "1",max:"10" %>
-      <span class="label" id="diff"></span>
+    <span class="label" id="diff"></span>
     </td>
   </tr>
 
 </table>
-  <div class="actions">
-    <%= f.submit "提交",:class=>"btn btn-success btn-large" %>
-  </div>
+<div class="actions">
+  <%= f.submit "提交",:class=>"btn btn-success btn-large" %>
+</div>
 <% end %>
+<%=render 'upload'%>
