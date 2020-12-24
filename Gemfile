@@ -48,7 +48,7 @@ group :development do
   gem "byebug"
   gem "better_errors"
   gem "binding_of_caller"
-  gem 'capistrano', "3.0.0"
+  gem 'capistrano', "3.8.0"
   gem 'capistrano-bundler'
   gem 'capistrano3-unicorn'
   gem 'capistrano-rails'
