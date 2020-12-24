@@ -1,0 +1,19 @@
+<form method="post" action="<%=upload_question_path %>" enctype="multipart/form-data" id="fileupload"> 
+  <input class="form-control" type="file"  name="data_file" accept=".png">
+  <input type="hidden"  name="<%=request_forgery_protection_token.to_s%>"  value="<%=form_authenticity_token%>" >
+</form>
+
+<script>
+$(function () {
+    $('#fileupload').fileupload({
+dataType: 'json',
+done: function (e, data) {
+$("#option_image").attr("src", "/tmp/"+data.result.file)
+$.each(data.result.files, function (index, file) {
+  console.log(file)
+  });
+}
+});
+    });
+</script>
+

@@ -104,19 +104,14 @@ class QuestionsController < BackyardController
   end
 #上传图片
   def upload
-    url = params["data_file"].tempfile.path
-    filename = params["data_file"].original_filename
+    url = params["uploadImage"].tempfile.path
+    filename = params["uploadImage"].original_filename
     image = MiniMagick::Image.open(url)
     image.resize "200"
     filename =  "#{current_user.id}_#{filename}"
     d_file = "#{Rails.root}/public/tmp/#{filename}"
     FileUtils.mv(image.path, d_file)
-    render json: {file: filename}
-    # Get the Image's width
-    # image.width # 4928
-    #   
-    # # Get the image's height
-    # image.height #3264
+    render json: {result:{returnData: {url: "tmp\/#{filename}"}}}
   end
   private
     # Use callbacks to share common setup or constraints between actions.

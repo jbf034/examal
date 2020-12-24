@@ -32,7 +32,7 @@ gem 'jquery-fileupload-rails'
 # gem 'bcrypt', '~> 3.1.7'
 
 # Use unicorn as the app server
-# gem 'unicorn'
+gem 'unicorn'
 
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
@@ -48,4 +48,8 @@ group :development do
   gem "byebug"
   gem "better_errors"
   gem "binding_of_caller"
+  gem 'capistrano', "3.0.0"
+  gem 'capistrano-bundler'
+  gem 'capistrano3-unicorn'
+  gem 'capistrano-rails'
 end
