@@ -11,8 +11,8 @@ preload_app true
 working_directory Rails.root
 pid "#{Rails.root}/tmp/pids/unicorn.pid"
 
-listen "/tmp/unicorn.cgpt.sock"
-worker_processes 5
+listen "/tmp/unicorn.exam.sock"
+worker_processes 2
 timeout 120
 
 stderr_path Rails.root + '/log/unicorn_error.log'

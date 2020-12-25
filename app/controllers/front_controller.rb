@@ -1,5 +1,5 @@
 class FrontController < ApplicationController
-	before_actio :authorize
+	before_action :authorize
 	before_action :set_logged_student
 	layout "panel"
 	def logged_student
