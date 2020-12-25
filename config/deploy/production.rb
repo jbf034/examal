@@ -1,4 +1,4 @@
-server "wcsyxx.s162.airbean.com", port: 22322, user: "root", roles: [:app, :web, :db]
+server "wc-exam.airbean.com", port: 22322, user: "root", roles: [:app, :web, :db]
 set :deploy_to, '/app'
 set :branch, "master"
 set :ssh_options, {
