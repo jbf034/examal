@@ -10,19 +10,19 @@ default: &default
   pool: 5
   username: root
   password: root
-  host: 'mysql'
+  host: mysql
   #socket: /var/run/mysqld/mysqld.sock
   
 development:
   <<: *default
-  database: db/cgpt_development
+  database: exam_development
 # Warning: The database defined as "test" will be erased and
 # re-generated from your development database when you run "rake".
 # Do not set this db to the same as development or production.
 test:
   <<: *default
-  database: db/test.sqlite3
+  database: exam_test
 
 production:
   <<: *default
-  database: cgpt_prd
+  database: exam_prd

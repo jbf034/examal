@@ -1,4 +1,4 @@
-class CreateStudents < ActiveRecord::Migration
+class CreateStudents < ActiveRecord::Migration[5.0]
   def change
     create_table :students,options:"charset=utf8" do |t|
       t.string :stuid , limit:50

@@ -1,4 +1,4 @@
-class CreateQuestions < ActiveRecord::Migration
+class CreateQuestions < ActiveRecord::Migration[5.0]
   def change
     create_table :questions,options:"charset=utf8" do |t|
       t.text :title  ,null:false

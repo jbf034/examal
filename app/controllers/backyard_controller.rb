@@ -1,5 +1,5 @@
 class BackyardController < ApplicationController
-	before_filter :authorize
+	before_action :authorize
 	before_action :set_logged_teacher
 	def logged_teacher
 		Teacher.find_by_id(session[:teacher_id])

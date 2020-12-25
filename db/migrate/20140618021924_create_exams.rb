@@ -1,4 +1,4 @@
-class CreateExams < ActiveRecord::Migration
+class CreateExams < ActiveRecord::Migration[5.0]
   def change
     create_table :exams,options:"charset=utf8" do |t|
       t.string :name,null:false
