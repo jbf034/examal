@@ -1,12 +1,17 @@
 Rails.application.routes.draw do
 
   get 'panel/exam/:id'=>'panel#exam',as:"panel_exam"
+  
   post 'panel/exam/:id'=>'panel#check'
   get 'panel/index'
 
   get 'panel/taken'
 
   get 'panel/untaken'
+
+  get 'panel/wechat_index'
+  get 'panel/wechat_exam/:id'=>'panel#wechat_exam'
+  post 'panel/wechat_exam/:id'=>'panel#wechat_check', as: "panel_wechat_exam"
 
   get 'panel/info'
 

@@ -1,0 +1,12 @@
+<div class="page-header">
+  <h4>正在进行的考试 </h4>
+</div>
+<% unless @current.empty? %>
+  <table class="table table-striped">
+    <% @current.each do |exam| %>
+      <%=  render partial: "panel/wechats/subject", locals: { exam: exam }%>
+    <%end%>
+  </table>
+<% else %>
+  目前没有正在进行的考试
+<% end %>

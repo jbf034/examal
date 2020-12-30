@@ -19,16 +19,18 @@ class Student < ActiveRecord::Base
 			end
 		end
 	end
-	def self.encrypt_password(password,salt)
 
+	def self.encrypt_password(password,salt)
 		Digest::SHA2.hexdigest(password.to_s+salt)
 	end
+
 	def password=(password)
 		@password=password
 		if password.present?
 			self.hashed_password = self.class.encrypt_password(password,name)
 		end
 	end
+
 	private 
 	def password_must_be_present
 		errors.add(:password,"没有找到") unless hashed_password.present?

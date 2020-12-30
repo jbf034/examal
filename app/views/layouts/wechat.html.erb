@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1">
+	<title>Examal-在线考试系统</title>
+  <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" rel="stylesheet">
+    <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
+	<%= csrf_meta_tags %>
+</head>
+<body>
+<div class="panels">
+	<div class="panel-header ">
+		<%= image_tag("logo.png",id:"logo") %>
+	</div>
+	<%= yield %>
+</body>
+
+<%= yield :js %>
+</html>

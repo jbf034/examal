@@ -3,8 +3,16 @@ class FrontController < ApplicationController
 	before_action :set_logged_student
 	layout "panel"
 	def logged_student
-		Student.find_by_id(session[:student_id])
+		student = Student.find_by_id(session[:student_id])
+    if student.blank?
+		  student = Student.find_by_stuid(params["stuid"])
+      if student.blank?
+        student = Student.create!({stuid: params["stuid"], grade:params["grade"], name: params["name"], password: "123456"})
+      end
+    end
+    student
 	end
+
 	protected
 	def authorize
 		unless !(session[:student_id].nil?) && Student.find_by_id(session[:student_id])

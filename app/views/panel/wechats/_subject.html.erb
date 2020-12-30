@@ -1,0 +1,25 @@
+<thead class="table_thead">
+  <th>考试名称:<%= exam.name%></th>
+  <th>试卷数(份)<%= exam.subjects.size %></th>
+  <th></th>
+  <th></th>
+</thead>
+
+<div>
+  <thead>
+    <th>试卷名称</th>
+    <th>简介</th>
+    <th>分数</th>
+    <th>提供者</th>
+    <th></th>
+  </thead>
+  <%  exam.subjects.each do |sb| %>
+    <tr>
+      <td><%= sb.title %></td>
+      <td><%= sb.remark%></td>
+      <td><%= @logged_student.results.find_by_subject_id(sb.id).mark || '还未考'%></td>
+      <td><%= exam.teacher.name %></td>
+      <td><%= link_to "开始考试", panel_wechat_exam_path({id:exam.id, subject_id:sb.id}),:class=>"btn btn-primary" %></td>
+    </tr>
+  <% end %>
+</div>
