@@ -6,7 +6,6 @@ class Student < ActiveRecord::Base
 	validates_uniqueness_of :stuid,message:"已经存在，请换一个学号"
 	attr_reader :password
 	validates_length_of :password,minimum: 6,message: "至少要有6位"
-
 	validate :password_must_be_present
 	has_many :contests
 	has_many :subjects, through: :results

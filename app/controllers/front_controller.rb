@@ -7,9 +7,12 @@ class FrontController < ApplicationController
     if student.blank?
 		  student = Student.find_by_stuid(params["stuid"])
       if student.blank?
-        student = Student.create!({stuid: params["stuid"], grade:params["grade"], name: params["name"], password: "123456"})
+        grade = Time.now.year - params["grade"].to_i + 1
+        teacher = Teacher.first
+        student = Student.create!({stuid: params["stuid"], grade: grade, name: params["name"], password: "123456", teacher_id: teacher.id})
       end
     end
+    session[:student_id] = student.id
     student
 	end
 

@@ -5,6 +5,7 @@ class Exam < ActiveRecord::Base
 	validates_format_of :valid_from,:valid_to,with:/\d{4}-\d{2}-\d{2}/,message:"不是一个合法的日期格式'YYYY-mm-dd hh-MM'"
 	belongs_to :teacher
 	has_and_belongs_to_many :subjects, :dependent => :destroy
+	has_and_belongs_to_many :questions, :dependent => :destroy
 	has_many :contests, :dependent => :destroy
 	has_many :students,through: :contests
   has_many :results, :dependent => :destroy

@@ -16,7 +16,7 @@ class ExamsController < BackyardController
 
   # GET /exams/new
   def new
-    @grade = current_user.students.pluck(:grade).uniq
+    @grade = Student.all.pluck(:grade).uniq
     @subjects = current_user.subjects.select(:id, :title)
 
     @students = Student.where("grade in (?)", params["grade"])
@@ -34,8 +34,7 @@ class ExamsController < BackyardController
     unless @edit_or_delete_right
       redirect_to exams_url,notice:"您无权修改别人编写的考试"
     end
-     
-    @grade = current_user.students.pluck(:grade).uniq
+    @grade = Student.all.pluck(:grade).uniq
     @subjects = current_user.subjects.select(:id, :title)
     @select_sub = @exam.subjects.ids
     @select_grade = @exam.students.pluck(:grade).uniq  
