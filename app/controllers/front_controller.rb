@@ -10,9 +10,9 @@ class FrontController < ApplicationController
         grade = Time.now.year - params["grade"].to_i + 1
         teacher = Teacher.first
         student = Student.create!({stuid: params["stuid"], grade: grade, name: params["name"], password: "123456", teacher_id: teacher.id})
-        add_subject(student)
       end
     end
+    add_subject(student)
     session[:student_id] = student.id
     student
   end
@@ -36,8 +36,8 @@ class FrontController < ApplicationController
       subjects = e.subjects
       grades = e.grade
       if grades.include?(student.grade)
-        e.add_students_to_exam([student.id])
-        e.add_subjects_to_result([student.id])
+        e.add_students_to_exam([student.id]) if e.contests.find_by_student_id(student.id).blank?
+        e.add_subjects_to_result([student.id]) if e.results.find_by_student_id(student.id).blank?
       end
     end
   end

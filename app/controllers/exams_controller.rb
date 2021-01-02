@@ -78,9 +78,9 @@ class ExamsController < BackyardController
     parsed_param=exam_params
     grades = params["grade"] || []
     subjects = (params["subject"] || []).map{|x| x.to_i}
-
     contests = @exam.contests
     @students = Student.where("grade in (?)", grades)
+
     del_ids = contests.pluck(:student_id) - @students.ids
     new_ids = @students.ids - contests.pluck(:student_id)
 

@@ -98,7 +98,6 @@ class PanelController < FrontController
 
   def wechat_exam #开始考试
   	student=@logged_student
-
   	unless true || student.results.find_by_subject_id(params[:subject_id]).mark.nil?
   		redirect_to panel_wechat_index_url,notice:"您已经参加过这门考试"
   	end
@@ -111,12 +110,12 @@ class PanelController < FrontController
   end
 
   def wechat_index
-    @exams=@logged_student.exams.taken
+    @exams=@logged_student.exams
     @average=0
     now=Time.now+8*3600
     @taken_subjects = @logged_student.results.where("exam_id in (?)", @exams.ids)
     @taken_subjects.each do |result|
-      @average+=result.mark
+      @average+=result.mark || 0
     end
     @average = @average / (@taken_subjects.blank? ? 1 : @taken_subjects.size)
   	@current = @logged_student.exams.where("valid_from <= ? and valid_to >= ?",now,now)
